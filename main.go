@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"html/template"
+	"fmt"
 )
 
 var tmpl = template.Must(template.ParseFiles("templates/home.html"))
@@ -11,13 +12,19 @@ var tmpl = template.Must(template.ParseFiles("templates/home.html"))
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		data := map[string]string{
-			"Title": "Home Page",
+			"Title": "Elliott's Website",
 		}
 
 		if err := tmpl.Execute(w, data); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
+
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		un := r.FormValue("username")
+		fmt.Println(un)
+	});
 	
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	log.Println("Server running at http://elliottcepin.dev:8080")
